@@ -78,7 +78,7 @@ multiscale:
       method: multiscale
       neighbor_method: kmeans
       num_clusters: 20
-      threshold: 0.14
+      multiscale_threshold: 0.14
 
 sparse:
   fixed:

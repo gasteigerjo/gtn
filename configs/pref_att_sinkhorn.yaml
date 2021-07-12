@@ -150,7 +150,7 @@ multiscale:
       method: multiscale
       neighbor_method: kmeans
       num_clusters: 8
-      threshold: 0.1
+      multiscale_threshold: 0.1
 
     # Hyperparameters
     weight_decay: 5e-5

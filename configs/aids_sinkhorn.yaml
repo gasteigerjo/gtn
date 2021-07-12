@@ -146,7 +146,7 @@ multiscale:
       method: multiscale
       neighbor_method: kmeans
       num_clusters: 11
-      threshold: 0.1
+      multiscale_threshold: 0.1
 
     # Hyperparameters
     learning_rate: 0.015
