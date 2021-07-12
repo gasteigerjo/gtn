@@ -11,7 +11,7 @@ The paper furthermore proposed the locally corrected Nyström (LCN) approximatio
 ## Installation
 You can install the repository using `pip install -e .`.
 
-## Running embedding alignment
+## Training GTN
 This repository contains a notebook for training and evaluating GTN (`experiment.ipynb`) and a script for running this on a cluster with [SEML](https://github.com/TUM-DAML/seml) (`experiment_seml.py`).
 
 The config files specify all hyperparameters and allow reproducing the results in the paper.
