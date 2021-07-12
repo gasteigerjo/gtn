@@ -1,0 +1,62 @@
+# Experiment configuration file.
+
+seml:
+  executable: 'experiment_seml.py'
+  name: 'gtn_pm20k_lcn'
+  output_dir: '~/logs'
+  project_root_dir: '..'
+
+slurm:
+  experiments_per_job: 1
+  sbatch_options:
+    mem: 32G
+    gres: 'gpu:1'
+    cpus-per-task: 5
+    time: '30-00:00'
+
+fixed:
+  # Dataset
+  dataname: 'pref_att_20000'
+  graph_distance: 'PM'
+  extensive: True
+  similarity: False
+
+  # Model
+  emb_size: 32
+  nlayers: 3
+  act_fn: 'leaky_relu'
+  weight_decay: 0
+  deg_norm_hidden: False
+
+  # Sinkhorn
+  sinkhorn_reg: 50.0
+  sinkhorn_niter: 100
+  unbalanced_mode:
+    name: 'bp_matrix'
+  num_heads: 1
+  nystrom:
+    landmark_method: kmeans
+    num_clusters: 20
+  sparse:
+    method: lsh
+    neighbor_method: kmeans_hier
+    num_clusters: [10, 10, 20]
+
+  # Training
+  num_epochs: 200
+  batch_size: 4
+  learning_rate: 0.01
+  lr_stepsize: 100
+  lr_gamma: 0.1
+
+  device: 'cuda'
+
+  # Evaluate test performance
+  # test: True
+
+grid:
+  seed:
+    type: choice
+    # Random seeds
+    options:
+      - 216871081

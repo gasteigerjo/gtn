@@ -1,0 +1,121 @@
+# Experiment configuration file.
+
+seml:
+  executable: 'experiment_seml.py'
+  name: 'gtn_linux'
+  output_dir: '~/logs'
+  project_root_dir: '..'
+
+slurm:
+  experiments_per_job: 1
+  sbatch_options:
+    mem: 32G
+    gres: gpu:1
+    cpus-per-task: 2
+    time: 2-00:00
+
+fixed:
+  # Dataset
+  dataname: 'linux'
+  graph_distance: 'GED'
+  extensive: False
+  similarity: True
+  pyg_data_path: './data'
+
+  # Model
+  emb_size: 32
+  nlayers: 4
+  act_fn: 'leaky_relu'
+  weight_decay: 1e-6
+  deg_norm_hidden: True
+
+  # Sinkhorn
+  sinkhorn_niter: 200
+
+  # Training
+  num_epochs: 1000
+  batch_size: 1000
+  learning_rate: 0.01
+  lr_stepsize: 100
+  lr_gamma: 0.5
+
+  device: 'cuda'
+
+  # Evaluate test performance
+  # test: True
+
+grid:
+  seed:
+    type: choice
+    # Random seeds
+    options:
+      - 321762554
+      - 846673264
+      - 254306949
+
+1head:
+  fixed:
+    # Unbalanced
+    unbalanced_mode:
+      name: 'bp_matrix'
+      full_bp: True
+    # full_bp calculates the full BP matrix instead of splitting it up, which is faster for small matrices on GPU
+
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Multihead stuff
+    num_heads: 1
+
+    # Hyperparameters
+    sinkhorn_reg: 1.0
+
+8head:
+  fixed:
+    # Unbalanced
+    unbalanced_mode:
+      name: 'bp_matrix'
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Multihead stuff
+    num_heads: 8
+    multihead_scale_basis: 2
+
+    # Hyperparameters
+    sinkhorn_reg: 1.0
+
+balanced:
+  fixed:
+    # Balanced
+    unbalanced_mode:
+      name: 'balanced'
+
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Multihead stuff
+    num_heads: 1
+
+    # Hyperparameters
+    sinkhorn_reg: 2.0
+
+unbalanced:
+  fixed:
+    # Unbalanced
+    unbalanced_mode:
+      name: 'entropy_reg'
+      marginal_reg: 100
+
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Multihead stuff
+    num_heads: 1
+
+    # Hyperparameters
+    sinkhorn_reg: 2.0

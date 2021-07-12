@@ -1,0 +1,20 @@
+# Jupyter
+.ipynb_checkpoints
+
+# VS Code
+.vscode
+
+# Python
+__pycache__
+*.pyc
+
+# pytest
+.pytest_cache
+
+# setuptools
+*.egg-info
+
+logs/
+
+# Largest dataset
+data/pref_att_20000_*

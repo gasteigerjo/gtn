@@ -1,0 +1,190 @@
+# Experiment configuration file.
+
+seml:
+  executable: 'experiment_seml.py'
+  name: 'gtn_aids'
+  output_dir: '~/logs'
+  project_root_dir: '..'
+
+slurm:
+  experiments_per_job: 1
+  sbatch_options:
+    mem: 32G
+    gres: gpu:1
+    cpus-per-task: 2
+    time: 2-00:00
+
+fixed:
+  # Dataset
+  dataname: 'aids30'
+  graph_distance: 'GED'
+  extensive: True
+  similarity: False
+
+  # Model
+  emb_size: 32
+  nlayers: 3
+  act_fn: 'leaky_relu'
+  weight_decay: 5e-3
+  deg_norm_hidden: True
+
+  # Sinkhorn
+  sinkhorn_niter: 500
+
+  # Training
+  num_epochs: 200
+  batch_size: 100
+  lr_stepsize: 100
+  lr_gamma: 0.1
+
+  device: 'cuda'
+
+  # Evaluate test performance
+  # test: True
+
+grid:
+  seed:
+    type: choice
+    # Random seeds
+    options:
+      - 216871081
+      - 604648130
+      - 868849835
+
+1head:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.1
+    unbalanced_mode:
+      name: 'bp_matrix'
+      full_bp: True
+    # full_bp calculates the full BP matrix instead of splitting it up, which is faster for small matrices on GPU
+    num_heads: 1
+
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Hyperparameters
+    learning_rate: 0.01
+
+8head:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.075
+    unbalanced_mode:
+      name: 'bp_matrix'
+    num_heads: 8
+    multihead_scale_basis: 2
+
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Hyperparameters
+    learning_rate: 0.01
+
+balanced:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.1
+    unbalanced_mode:
+      name: 'balanced'
+    num_heads: 1
+
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Hyperparameters
+    learning_rate: 0.01
+
+unbalanced:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.1
+    unbalanced_mode:
+      name: 'entropy_reg'
+      marginal_reg: 10
+    num_heads: 1
+
+    # OT approximations
+    nystrom: None
+    sparse: None
+
+    # Hyperparameters
+    learning_rate: 0.01
+
+nystrom:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.2
+    unbalanced_mode:
+      name: 'bp_matrix'
+    num_heads: 1
+
+    # OT approximations
+    nystrom:
+      landmark_method: kmeans
+      num_clusters: 4
+    sparse: None
+
+    # Hyperparameters
+    learning_rate: 0.015
+
+multiscale:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.2
+    unbalanced_mode:
+      name: 'bp_matrix'
+    num_heads: 1
+
+    # OT approximations
+    nystrom: None
+    sparse:
+      method: multiscale
+      neighbor_method: kmeans
+      num_clusters: 11
+      threshold: 0.1
+
+    # Hyperparameters
+    learning_rate: 0.015
+
+sparse:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.2
+    unbalanced_mode:
+      name: 'bp_matrix'
+    num_heads: 1
+
+    # OT approximations
+    nystrom: None
+    sparse:
+      method: lsh
+      neighbor_method: kmeans
+      num_clusters: 8
+
+    # Hyperparameters
+    learning_rate: 0.015
+
+lcn:
+  fixed:
+    # Sinkhorn
+    sinkhorn_reg: 0.2
+    unbalanced_mode:
+      name: 'bp_matrix'
+    num_heads: 1
+
+    # OT approximations
+    nystrom:
+      landmark_method: kmeans
+      num_clusters: 2
+    sparse:
+      method: lsh
+      neighbor_method: kmeans
+      num_clusters: 11
+
+    # Hyperparameters
+    learning_rate: 0.015
