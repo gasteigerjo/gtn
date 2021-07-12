@@ -77,31 +77,45 @@ def run(
     ---------
     dataname:               Dataset name
     graph_distance:         Which distance to fit (GED or PM)
-    pyg_data_path:          Path to PyTorch Geometric data directory (only for Linux dataset)
+    pyg_data_path:          Path to PyTorch Geometric data directory
+                            (only for Linux dataset)
     extensive:              The target label scales with the number of nodes
-    similarity:             The target label is a similarity (predicted via exp(-distance))
+    similarity:             The target label is a similarity
+                            (predicted via exp(-distance))
     emb_size:               GNN embedding size
     nlayers:                Number of GNN layers
-    act_fn:                 Activation function. Options: linear, relu, sigmoid, leaky_relu
+    act_fn:                 Activation function.
+                            Options: linear, relu, sigmoid, leaky_relu
     weight_decay:           Weight decay for weight regularization
-    deg_norm_hidden:        Use symmetric degree normalization in all GNN layers except the first
+    deg_norm_hidden:        Use symmetric degree normalization
+                            in all GNN layers except the first
     sinkhorn_reg:           Entropy regularization used for the Sinkhorn distance
     sinkhorn_niter:         Number of Sinkhorn iterations
-    unbalanced_mode:        Mode for handling asymmetric numbers of nodes. Options: bp_matrix, balanced, entropy_reg
+    unbalanced_mode:        Mode for handling asymmetric numbers of nodes.
+                            Options: bp_matrix, balanced, entropy_reg
     num_heads:              Number of OT heads
     multihead_scale_basis:  Basis for varying the Sinkhorn regularization across heads
-    nystrom:                Whether to use Nyström approximation, and its settings
-    sparse:                 Whether to use a sparse approximation, and its settings
+    nystrom:                Dictionary containing Nyström approximation settings.
+                            Set to None to deactivate.
+                            Possible keys: landmark_method, num_clusters
+    sparse:                 Dictionary containing sparse approximation settings.
+                            Set to None to deactivate.
+                            Possible keys: method, neighbor_method, num_clusters,
+                                           multiscale_threshold, num_hash_bands,
+                                           num_hashes_per_band
     num_epochs:             Number of epochs
     batch_size:             Batch size
     learning_rate:          Learning rate
     lr_stepsize:            Number of steps after which to decrease the learning rate
-    lr_gamma:               Factor with which to reduce the learning rate every lr_stepsize steps
-    print_step:             Print loss and metrics every X steps. Default: Once per epoch.
+    lr_gamma:               Factor with which to reduce the
+                            learning rate every lr_stepsize steps
+    print_step:             Print loss and metrics every X steps.
+                            Default: Once per epoch.
     seed:                   Random seed for NumPy, PyTorch, and Python
     device:                 Which device to use, e.g. cpu, cuda
     save_weights:           Save the best model weights after training
-    test:                   Also evaluate the test set. Only set this once everything is done!
+    test:                   Also evaluate the test set.
+                            Only set this once everything is done!
     """
 
     my_dict = locals().copy()
