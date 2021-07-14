@@ -59,8 +59,7 @@ grid:
 full:
   fixed:
     unbalanced_mode:
-      full_bp: True
-    # full_bp calculates the full BP matrix instead of splitting it up, which is faster for small matrices on GPU
+      full_bp: False
     nystrom: None
     sparse: None
 
