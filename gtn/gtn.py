@@ -48,6 +48,14 @@ class GTN(nn.Module):
         self.multihead_scale_basis = multihead_scale_basis
         self.similarity = similarity
 
+        if (self.sparse or self.nystrom) and self.unbalanced_mode["name"] not in [
+            "bp_matrix",
+            "balanced",
+        ]:
+            raise NotImplementedError(
+                "Sinkhorn approximations only implemented for the BP matrix and regular (balanced) Sinkhorn."
+            )
+
         if self.sparse:
             self.sparse["num_hashes"] = self.sparse.get("num_hashes", 1)
 
@@ -118,49 +126,38 @@ class GTN(nn.Module):
 
         return node_embeddings
 
-    def _compute_matching(self, cost_mat, cost_mat_len, sparse=None, nystrom=None):
+    def _compute_matching(self, cost_mat):
         sinkhorn_input_dict = cost_mat.copy()
 
-        if (sparse or nystrom) and self.unbalanced_mode["name"] not in [
-            "bp_matrix",
-            "balanced",
-        ]:
-            raise NotImplementedError(
-                "Sinkhorn approximations only implemented for the BP matrix and regular (balanced) Sinkhorn."
-            )
-
-        if sparse and nystrom:
+        if cost_mat.representation == "lcn":
             if self.unbalanced_mode["name"] == "bp_matrix":
                 sinkhorn_fn = LogLCNSinkhornBP
             else:
                 sinkhorn_fn = LogLCNSinkhorn
-        elif sparse:
+        elif cost_mat.representation == "sparse":
             if self.unbalanced_mode["name"] == "bp_matrix":
                 sinkhorn_fn = LogSparseSinkhornBP
             else:
                 sinkhorn_fn = LogSparseSinkhorn
-        elif nystrom:
+        elif cost_mat.representation == "nystrom":
             if self.unbalanced_mode["name"] == "bp_matrix":
                 sinkhorn_fn = LogNystromSinkhornBP
             else:
                 sinkhorn_fn = LogNystromSinkhorn
-        else:
-            if self.unbalanced_mode["name"] == "bp_matrix":
-                if self.unbalanced_mode.get("full_bp", False):
-                    sinkhorn_input_dict.num_points = cost_mat_len
-                    sinkhorn_input_dict.offset_entropy = True
-                    sinkhorn_fn = LogSinkhorn
-                else:
-                    sinkhorn_fn = LogSinkhornBP
-            elif self.unbalanced_mode["name"] == "entropy_reg":
+        elif cost_mat.representation == "bp_full":
+            sinkhorn_input_dict.offset_entropy = True
+            sinkhorn_fn = LogSinkhorn
+        elif cost_mat.representation == "bp_decomposed":
+            sinkhorn_fn = LogSinkhornBP
+        elif cost_mat.representation == "full":
+            sinkhorn_input_dict.offset_entropy = True
+            if self.unbalanced_mode["name"] == "entropy_reg":
                 sinkhorn_input_dict.reg_marginal = (
                     sinkhorn_input_dict.sinkhorn_reg
                     * self.unbalanced_mode["marginal_reg"]
                 )
-                sinkhorn_input_dict.offset_entropy = True
                 sinkhorn_fn = entropyRegLogSinkhorn
             elif self.unbalanced_mode["name"] == "balanced":
-                sinkhorn_input_dict.offset_entropy = True
                 sinkhorn_fn = LogSinkhorn
             else:
                 raise NotImplementedError(
@@ -247,9 +244,7 @@ class GTN(nn.Module):
             full_bp_matrix=self.unbalanced_mode.get("full_bp", False),
         )
 
-        output = self._compute_matching(
-            cost_matrix, cost_mat_len_rep, sparse=self.sparse, nystrom=self.nystrom
-        )
+        output = self._compute_matching(cost_matrix)
 
         if self.num_heads > 1:
             output = output.reshape(
