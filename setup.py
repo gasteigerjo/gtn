@@ -10,15 +10,15 @@ install_requires_gtn = [
     "networkx",
     "sacred",
     "seml",
-    "lcn",  # See https://github.com/klicperajo/lcn
+    "lcn",  # See https://github.com/gasteigerjo/lcn
 ]
 
 setup(
     name="GTN",
     version="1.0",
     description="Graph Transport Network",
-    author="Johannes Klicpera",
-    author_email="klicpera@in.tum.de",
+    author="Johannes Gasteiger",
+    author_email="j.gasteiger@in.tum.de",
     packages=["gtn"],
     install_requires=install_requires_gtn,
     zip_safe=False,
