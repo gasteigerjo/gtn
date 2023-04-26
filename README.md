@@ -2,7 +2,7 @@
 
 Reference implementation of the graph transport network (GTN), as proposed in our paper 
 
-**[Scalable Optimal Transport in High Dimensions for Graph Distances, Embedding Alignment, and More](https://www.daml.in.tum.de/lcn)**   
+**[Scalable Optimal Transport in High Dimensions for Graph Distances, Embedding Alignment, and More](https://www.cs.cit.tum.de/daml/lcn/)**   
 by Johannes Gasteiger, Marten Lienen, Stephan Günnemann  
 Published at ICML 2021.
 
